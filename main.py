@@ -68,12 +68,12 @@ CONTEXT_IMAGES = [
 ]
 
 
-def process_image(input_image_gr: gr.File) -> tuple[gr.File, gr.Image]:
+def process_image(input_image_gr: gr.Image) -> gr.Image:
     if input_image_gr is None:
         return "Please upload an image."
 
     print("Loading image...")
-    input_image = load_local_image(input_image_gr.name)
+    input_image = load_local_image(input_image_gr)
 
     print("Generating image...")
     response = generate_image(PROMPT_TEXT, input_image, CONTEXT_IMAGES)
@@ -81,31 +81,29 @@ def process_image(input_image_gr: gr.File) -> tuple[gr.File, gr.Image]:
     print("Storing generated image...")
     store_image(response, "./generated_image.png")
     
-    return input_image_gr, gr.Image("./generated_image.png")
+    return gr.Image("./generated_image.png")
 
 
 # Gradio interface setup
-with gr.Blocks(fill_height=True) as app:
+with gr.Blocks() as app:
+    
     with gr.Row(height="60px"):
-        image_upload = gr.File(label="Upload image")
+        
+        gr.Text("Ben je in Baarn, maar ligt je hart nog in Terschelling? <br />Upload je foto en waan je even op het eiland!")
+        map = gr.Image(label="Map Image", value="./images/frontend/map.jpg", height="50px", interactive=False)
         query_button = gr.Button("Terschellingify")
 
     with gr.Row(height="fit"):
-        input = gr.Image(label="Input Image")
+        image_upload = gr.Image(sources=["upload"], label="Upload image", height="80%", type="filepath")
+        # image_upload = gr.File(file_types=["image"], file_count="single", label="Upload image")
         output = gr.Image(label="Terschellingified")
 
     query_button.click(
         process_image, 
         inputs=[image_upload], 
-        outputs=[input, output]
+        outputs=[output]
     )
 
 
 if __name__ == "__main__":
-    app.launch()
-
-
-if __name__ == "__main__":
-    print("Loading prompt and images...")
-    input_image = load_local_image("./images/input_image.jpg")
     app.launch()
