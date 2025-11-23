@@ -4,10 +4,10 @@ from google.genai import types
 import gradio as gr
 
 
-# Import environment variables (only relevant locally)
-from dotenv import load_dotenv
-# load .env file with API keys
-load_dotenv(dotenv_path="./.env")
+# # Import environment variables (only relevant locally)
+# from dotenv import load_dotenv
+# # load .env file with API keys
+# load_dotenv(dotenv_path="./.env")
 
 MODEL = "gemini-3-pro-image-preview"
 CONTEXT_FOLDER = "./images/context"
