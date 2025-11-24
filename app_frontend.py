@@ -1,13 +1,15 @@
+"""
+A Gradio frontend for allowing users to upload an image
+and generate a modified version.
+
+The modified image is generated using a text prompt and
+a set of context images.
+"""
 import os
 from google import genai
 from google.genai import types
 import gradio as gr
 
-
-# # Import environment variables (only relevant locally)
-# from dotenv import load_dotenv
-# # load .env file with API keys
-# load_dotenv(dotenv_path="./.env")
 
 MODEL = "gemini-3-pro-image-preview"
 CONTEXT_FOLDER = "./images/context"
@@ -69,6 +71,9 @@ CONTEXT_IMAGES = [
 
 
 def process_image(input_image_gr: gr.Image) -> gr.Image:
+    """
+    Process the uploaded image, generate a modified version,
+    """
     if input_image_gr is None:
         return "Please upload an image."
 
@@ -86,23 +91,53 @@ def process_image(input_image_gr: gr.Image) -> gr.Image:
 
 # Gradio interface setup
 with gr.Blocks() as app:
+    gr.Header("Terschelling, waar je maar wilt!")
+    with gr.Walkthrough(selected=1) as walkthrough:
+        with gr.Step("Intro", id=1):
+            gr.HTML(
+                (
+                    "<p>"
+                    "Is je lijf al terug op 't vasteland, "
+                    "maar ligt je hart nog op Terschelling? "
+                    "Upload je foto en wij brengen Terschelling naar jou!"
+                    "</p>"
+                )
+            )
+            map = gr.Image(
+                label="Map Image",
+                value="./images/frontend/map.jpg",
+                interactive=False,
+                container=False,
+                show_label=False
+            )
     
-    with gr.Row(height="60px"):
+            btn_go_to_step_2 = gr.Button("Let's go!")
+            btn_go_to_step_2.click(lambda: gr.Walkthrough(selected=2), outputs=walkthrough)
+        with gr.Step("Upload foto", id=2):
+            image_upload = gr.Image(
+                sources=["upload"],
+                label="Upload image",
+                type="filepath"
+            )
+
+            generate_image_button = gr.Button("Geef me meer Terschelling!")
         
-        gr.Text("Ben je in Baarn, maar ligt je hart nog in Terschelling? <br />Upload je foto en waan je even op het eiland!")
-        map = gr.Image(label="Map Image", value="./images/frontend/map.jpg", height="50px", interactive=False)
-        query_button = gr.Button("Terschellingify")
-
-    with gr.Row(height="fit"):
-        image_upload = gr.Image(sources=["upload"], label="Upload image", height="80%", type="filepath")
-        # image_upload = gr.File(file_types=["image"], file_count="single", label="Upload image")
-        output = gr.Image(label="Terschellingified")
-
-    query_button.click(
-        process_image, 
-        inputs=[image_upload], 
-        outputs=[output]
-    )
+            gr.HTML(
+                (
+                    "<p>"
+                    "Hieronder verschijnt je nieuwe foto!<br />"
+                    "Het kan een minuutje duren voordat ie klaar is!</p><p>"
+                    "Zorg ervoor dat het scherm niet op slaapstand gaat."
+                    "</p>"
+                )
+            )
+            
+            rendered_image = gr.Image(label="Terschellingified")
+        
+        generate_image_button.click(
+            process_image,
+            inputs=[image_upload], 
+            outputs=[rendered_image])
 
 
 if __name__ == "__main__":
