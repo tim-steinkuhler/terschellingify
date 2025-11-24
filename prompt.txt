@@ -1,0 +1,12 @@
+Could you alter input_image and make the following adjustments?
+
+1. Change the background, placing people in the setting in "background.jpg"
+2. Include the following elements:
+  - cranberries
+  - a ferry like the one in "ferry.jpg"
+  - a tandem bike
+  - a logo like "oerol.jpg"
+  - beer bottles like "ijwit.png"
+1. Change people's clothing, so they have plain sweaters, with a huge logo like the one in "logo.jpg"
+
+Please go all out in adding elements to the picture, but keep the faces and postures the same!
